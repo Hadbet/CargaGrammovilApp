@@ -79,16 +79,18 @@ async function insertarExcelVacaciones(file) {
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         const inventarioData = jsonData.slice(1).map((row) => {
+            let dateParts = row[4].split("/");
+            let formattedDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+
             return {
                 Nomina: row[0],
                 PrimerApeido: row[1],
                 SegundoApeido: row[2],
                 Nombre: row[3],
-                Antiguedad: row[4],
+                Antiguedad: formattedDate.toISOString().split('T')[0],
                 Vacaciones: row[6]
             };
         });
-
         const response = await fetch('dao/daoInsertarVacaciones.php', {
             method: 'POST',
             headers: {
