@@ -43,7 +43,7 @@ async function insertarExcelInventario(file) {
                 text: result.message
             });
             setTimeout(function() {
-                window.location.pathname = "table_caja_ahorro.php";
+                window.location.pathname = "RH/CargasGrammovilApp/dao/table_caja_ahorro.php";
             }, 1000);
         } else {
             throw new Error(result.message );
