@@ -45,7 +45,7 @@
                       </span>
                       <h3 class="h4 mt-4 mb-1 text-white">Vacaciones</h3>
                       <p class="text-white mb-4">Recuarda cargar el excel con los datos especificos.</p>
-                      <a href="form_idea.html" class="btn btn-lg bg-secondary-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
+                      <a href="#" class="btn btn-lg bg-secondary-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
                     </div> <!-- .card-body -->
                   </div> <!-- .card -->
                 </div> <!-- .col-md-->
@@ -57,7 +57,7 @@
                       </span>
                       <h3 class="h4 mt-4 mb-1 text-white">Caja Ahorro</h3>
                       <p class="text-white mb-4">Recuerda cargar el excel con los datos especificos.</p>
-                      <a href="form_kaizen.html" id="btnExcelInventario" class="btn btn-lg bg-primary-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
+                      <a href="#" id="btnExcelInventario" class="btn btn-lg bg-primary-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
                         <input type="file" id="fileInputInventario" accept=".xlsx, .xls"
                                style="display: none;"/>
                     </div> <!-- .card-body -->
