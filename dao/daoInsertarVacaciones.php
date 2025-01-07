@@ -74,7 +74,7 @@ function insertarRegistrosInventario($Nomina, $Nombre, $Antiguedad, $Vacaciones)
 
         } else {
 
-            $insertParte = $conex->prepare("INSERT INTO  `AuxCajaAhorro` (`IdUser`, `NomUser`, `FechaIngreso`, `DiasVacaciones`)
+            $insertParte = $conex->prepare("INSERT INTO  `AuxVacaciones` (`IdUser`, `NomUser`, `FechaIngreso`, `DiasVacaciones`)
                                             VALUES (?, ?, ?, ?)");
             $insertParte->bind_param("ssss", $Nomina, $Nombre, $Antiguedad, $Vacaciones);
 
