@@ -57,7 +57,9 @@
                       </span>
                       <h3 class="h4 mt-4 mb-1 text-white">Caja Ahorro</h3>
                       <p class="text-white mb-4">Recuerda cargar el excel con los datos especificos.</p>
-                      <a href="form_kaizen.html" class="btn btn-lg bg-primary-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
+                      <a href="form_kaizen.html" id="btnExcelInventario" class="btn btn-lg bg-primary-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
+                        <input type="file" id="fileInputInventario" accept=".xlsx, .xls"
+                               style="display: none;"/>
                     </div> <!-- .card-body -->
                   </div> <!-- .card -->
                 </div> <!-- .col-md-->
@@ -81,6 +83,11 @@
     </div> <!-- .wrapper -->
 
     <?php include 'estaticos/scriptEstandar.php'; ?>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="js/apps.js"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
+    <script src="js/excel.js"></script>
   </body>
 </html>
