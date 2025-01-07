@@ -42,6 +42,9 @@ async function insertarExcelInventario(file) {
                 title: 'Actualización exitosa',
                 text: result.message
             });
+            setTimeout(function() {
+                window.location.pathname = "table_caja_ahorro.php";
+            }, 1000);
         } else {
             throw new Error(result.message );
         }
