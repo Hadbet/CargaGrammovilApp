@@ -11,6 +11,7 @@ document.getElementById('fileInputInventario').addEventListener('change', (event
 async function insertarExcelInventario(file) {
     try {
         // Leer el archivo Excel
+        document.getElementById("btnModal").click();
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: 'array' });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -37,6 +38,7 @@ async function insertarExcelInventario(file) {
         const result = await response.json();
 
         if (result.status === "success") {
+            document.getElementById("btnCloseM").click();
             Swal.fire({
                 icon: 'success',
                 title: 'Actualización exitosa',
@@ -46,6 +48,12 @@ async function insertarExcelInventario(file) {
                 window.location.pathname = "RH/CargasGrammovilApp/table_caja_ahorro.php";
             }, 1000);
         } else {
+            document.getElementById("btnCloseM").click();
+            Swal.fire({
+                icon: 'error',
+                title: 'Ocurrio un problema',
+                text: result.message
+            });
             throw new Error(result.message );
         }
 

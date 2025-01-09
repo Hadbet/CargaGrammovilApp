@@ -78,10 +78,34 @@
                   </div> <!-- .card -->
                 </div> <!-- .col-md-->
               </div> <!-- .row -->
+
+                <!-- Button trigger modal -->
+                <button style="display: none" type="button" class="btn mb-2 btn-outline-success" data-toggle="modal" data-target="#verticalModal" id="btnModal"> Launch demo modal </button>
+
             </div> <!-- .col-12 -->
           </div> <!-- .row -->
         </div> <!-- .container-fluid -->
       </main> <!-- main -->
+
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="verticalModal" tabindex="-1" role="dialog" aria-labelledby="verticalModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-group" style="text-align: center;">
+                            <img src="assets/images/carga.gif" style="width: 60%">
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="display: none">
+                        <button type="button" class="btn mb-2 btn-secondary" data-dismiss="modal" id="btnCloseM">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div> <!-- .wrapper -->
 
     <?php include 'estaticos/scriptEstandar.php'; ?>
