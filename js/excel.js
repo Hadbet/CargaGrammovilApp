@@ -62,14 +62,29 @@ async function insertarExcelInventario(file) {
             }
         }else {
             document.getElementById("btnCloseM").click();
+            let timerInterval;
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Verifica si estas subiendo el archivo correcto.'
+                title: "El archivo no pertenece a la base.",
+                html: "Te regresaremos a la pagina <b></b> milliseconds.",
+                timer: 1500,
+                timerProgressBar: true,
+                icon: "success",
+                didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector("b");
+                    timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    location.reload();
+                }
             });
-            setTimeout(function() {
-                window.location.pathname = "RH/CargasGrammovilApp/inicio.php";
-            }, 1000);
         }
     } catch (error) {
         Swal.fire({
@@ -148,15 +163,29 @@ async function insertarExcelVacaciones(file) {
             }
         }else{
             document.getElementById("btnCloseM").click();
+            let timerInterval;
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Ocurrio un error el archivo que quieres subir no corresponde.'
+                title: "El archivo no pertenece a la base.",
+                html: "Te regresaremos a la pagina <b></b> milliseconds.",
+                timer: 1500,
+                timerProgressBar: true,
+                icon: "success",
+                didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector("b");
+                    timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    location.reload();
+                }
             });
-
-            setTimeout(function() {
-                window.location.pathname = "RH/CargasGrammovilApp/inicio.php";
-            }, 1000);
         }
     } catch (error) {
         Swal.fire({
