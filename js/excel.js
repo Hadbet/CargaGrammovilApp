@@ -17,6 +17,8 @@ async function insertarExcelInventario(file) {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+        console.log(jsonData[0].length);
+
         const inventarioData = jsonData.slice(1).map((row) => {
             return {
                 Nomina: row[0],
@@ -86,6 +88,8 @@ async function insertarExcelVacaciones(file) {
         const workbook = XLSX.read(data, { type: 'array' });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        console.log(jsonData[0].length);
 
         const inventarioData = jsonData.slice(1).map((row) => {
             let dateParts = row[4].split("/");
