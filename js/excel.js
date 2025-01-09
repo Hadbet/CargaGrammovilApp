@@ -19,46 +19,54 @@ async function insertarExcelInventario(file) {
 
         console.log(jsonData[0].length);
 
-        const inventarioData = jsonData.slice(1).map((row) => {
-            return {
-                Nomina: row[0],
-                Nombre: row[1],
-                AhorroTotal: row[2],
-                PendientePrestamo: row[3],
-                FondoAhorro: row[4]
-            };
-        });
+        if (jsonData[0].length===5){
 
-        const response = await fetch('dao/daoInsertarCajaAhorro.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ inventarioDatos: inventarioData })
-        });
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-            document.getElementById("btnCloseM").click();
-            Swal.fire({
-                icon: 'success',
-                title: 'Actualización exitosa',
-                text: result.message
+            const inventarioData = jsonData.slice(1).map((row) => {
+                return {
+                    Nomina: row[0],
+                    Nombre: row[1],
+                    AhorroTotal: row[2],
+                    PendientePrestamo: row[3],
+                    FondoAhorro: row[4]
+                };
             });
-            setTimeout(function() {
-                window.location.pathname = "RH/CargasGrammovilApp/table_caja_ahorro.php";
-            }, 1000);
-        } else {
-            document.getElementById("btnCloseM").click();
+
+            const response = await fetch('dao/daoInsertarCajaAhorro.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ inventarioDatos: inventarioData })
+            });
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+                document.getElementById("btnCloseM").click();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Actualización exitosa',
+                    text: result.message
+                });
+                setTimeout(function() {
+                    window.location.pathname = "RH/CargasGrammovilApp/table_caja_ahorro.php";
+                }, 1000);
+            } else {
+                document.getElementById("btnCloseM").click();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ocurrio un problema',
+                    text: result.message
+                });
+                throw new Error(result.message );
+            }
+        }else {
             Swal.fire({
                 icon: 'error',
-                title: 'Ocurrio un problema',
-                text: result.message
+                title: 'Error',
+                text: 'Verifica si estas subiendo el archivo correcto.'
             });
-            throw new Error(result.message );
         }
-
     } catch (error) {
         Swal.fire({
             icon: 'error',
@@ -91,49 +99,56 @@ async function insertarExcelVacaciones(file) {
 
         console.log(jsonData[0].length);
 
-        const inventarioData = jsonData.slice(1).map((row) => {
-            let dateParts = row[4].split("/");
-            let formattedDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+        if (jsonData[0].length===7){
+            const inventarioData = jsonData.slice(1).map((row) => {
+                let dateParts = row[4].split("/");
+                let formattedDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
 
-            return {
-                Nomina: row[0],
-                PrimerApeido: row[1],
-                SegundoApeido: row[2],
-                Nombre: row[3],
-                Antiguedad: formattedDate.toISOString().split('T')[0],
-                Vacaciones: row[6]
-            };
-        });
-        const response = await fetch('dao/daoInsertarVacaciones.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ inventarioDatos: inventarioData })
-        });
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-            document.getElementById("btnCloseM").click();
-            Swal.fire({
-                icon: 'success',
-                title: 'Actualización exitosa',
-                text: result.message
+                return {
+                    Nomina: row[0],
+                    PrimerApeido: row[1],
+                    SegundoApeido: row[2],
+                    Nombre: row[3],
+                    Antiguedad: formattedDate.toISOString().split('T')[0],
+                    Vacaciones: row[6]
+                };
             });
-            setTimeout(function() {
-                window.location.pathname = "RH/CargasGrammovilApp/table_vacaciones.php";
-            }, 1000);
-        } else {
-            document.getElementById("btnCloseM").click();
+            const response = await fetch('dao/daoInsertarVacaciones.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ inventarioDatos: inventarioData })
+            });
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+                document.getElementById("btnCloseM").click();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Actualización exitosa',
+                    text: result.message
+                });
+                setTimeout(function() {
+                    window.location.pathname = "RH/CargasGrammovilApp/table_vacaciones.php";
+                }, 1000);
+            } else {
+                document.getElementById("btnCloseM").click();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ocurrio un problema',
+                    text: result.message
+                });
+                throw new Error(result.message );
+            }
+        }else{
             Swal.fire({
                 icon: 'error',
-                title: 'Ocurrio un problema',
-                text: result.message
+                title: 'Error',
+                text: 'Ocurrio un error.'
             });
-            throw new Error(result.message );
         }
-
     } catch (error) {
         Swal.fire({
             icon: 'error',
