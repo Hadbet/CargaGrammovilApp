@@ -51,13 +51,13 @@ function insertarRegistrosInventario($Nomina, $Nombre, $AhorroTotal, $PendienteP
     $conex->begin_transaction();
 
     try {
-        $consultaExistente = $conex->prepare("SELECT * FROM `AuxCajaAhorro` WHERE `Nomina` = ? ");
+        $consultaExistente = $conex->prepare("SELECT * FROM `CajaAhorro` WHERE `Nomina` = ? ");
         $consultaExistente->bind_param("s", $Nomina);
         $consultaExistente->execute();
         $consultaExistente->store_result();
 
         if ($consultaExistente->num_rows > 0) {
-            $updateInventario = $conex->prepare("UPDATE `AuxCajaAhorro` SET `Nombre` = ?, `AhorroTotal` = ?, `PendientePrestamo` = ?, `FondoAhorro` = ? WHERE `Nomina` = ? ");
+            $updateInventario = $conex->prepare("UPDATE `CajaAhorro` SET `Nombre` = ?, `AhorroTotal` = ?, `PendientePrestamo` = ?, `FondoAhorro` = ? WHERE `Nomina` = ? ");
             $updateInventario->bind_param("sssss",  $Nombre, $AhorroTotal, $PendientePrestamo, $FondoAhorro, $Nomina);
             $resultado = $updateInventario->execute();
 
@@ -73,7 +73,7 @@ function insertarRegistrosInventario($Nomina, $Nombre, $AhorroTotal, $PendienteP
 
         } else {
 
-            $insertParte = $conex->prepare("INSERT INTO  `AuxCajaAhorro` (`Nomina`, `Nombre`, `AhorroTotal`, `PendientePrestamo`, `FondoAhorro`)
+            $insertParte = $conex->prepare("INSERT INTO  `CajaAhorro` (`Nomina`, `Nombre`, `AhorroTotal`, `PendientePrestamo`, `FondoAhorro`)
                                             VALUES (?, ?, ?, ?, ?)");
             $insertParte->bind_param("sssss", $Nomina, $Nombre, $AhorroTotal, $PendientePrestamo, $FondoAhorro);
 
