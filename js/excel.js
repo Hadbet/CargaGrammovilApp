@@ -68,7 +68,7 @@ async function insertarExcelInventario(file) {
                 html: "Te regresaremos a la pagina <b></b> milliseconds.",
                 timer: 1500,
                 timerProgressBar: true,
-                icon: "success",
+                icon: "error",
                 didOpen: () => {
                     Swal.showLoading();
                     const timer = Swal.getPopup().querySelector("b");
@@ -169,7 +169,7 @@ async function insertarExcelVacaciones(file) {
                 html: "Te regresaremos a la pagina <b></b> milliseconds.",
                 timer: 1500,
                 timerProgressBar: true,
-                icon: "success",
+                icon: "error",
                 didOpen: () => {
                     Swal.showLoading();
                     const timer = Swal.getPopup().querySelector("b");
