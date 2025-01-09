@@ -61,11 +61,15 @@ async function insertarExcelInventario(file) {
                 throw new Error(result.message );
             }
         }else {
+            document.getElementById("btnCloseM").click();
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Verifica si estas subiendo el archivo correcto.'
             });
+            setTimeout(function() {
+                window.location.pathname = "RH/CargasGrammovilApp/inicio.php";
+            }, 1000);
         }
     } catch (error) {
         Swal.fire({
@@ -143,11 +147,16 @@ async function insertarExcelVacaciones(file) {
                 throw new Error(result.message );
             }
         }else{
+            document.getElementById("btnCloseM").click();
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Ocurrio un error.'
+                text: 'Ocurrio un error el archivo que quieres subir no corresponde.'
             });
+
+            setTimeout(function() {
+                window.location.pathname = "RH/CargasGrammovilApp/inicio.php";
+            }, 1000);
         }
     } catch (error) {
         Swal.fire({
