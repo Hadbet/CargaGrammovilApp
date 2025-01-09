@@ -37,30 +37,24 @@
                             <table class="table datatables" id="dataTable-1">
                                 <thead>
                                 <tr>
-                                    <th>Folio</th>
-                                    <th>Número de Parte</th>
-                                    <th>Primer Conteo</th>
-                                    <th>Segundo Conteo</th>
-                                    <th>Tercer Conteo</th>
-                                    <th>Comentario</th>
-                                    <th>StorageBin</th>
-                                    <th>StorageType</th>
-                                    <th>Usuario</th>
-                                    <th>Estatus</th>
+                                    <th>Nomina</th>
+                                    <th>Nombre</th>
+                                    <th>Tag</th>
+                                    <th>Centro Costos</th>
+                                    <th>Nombre CC</th>
+                                    <th>Work Center</th>
+                                    <th>Nombre WC</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
-                                    <th>Folio</th>
-                                    <th>Número de Parte</th>
-                                    <th>Primer Conteo</th>
-                                    <th>Segundo Conteo</th>
-                                    <th>Tercer Conteo</th>
-                                    <th>Comentario</th>
-                                    <th>StorageBin</th>
-                                    <th>StorageType</th>
-                                    <th>Usuario</th>
-                                    <th>Estatus</th>
+                                    <th>Nomina</th>
+                                    <th>Nombre</th>
+                                    <th>Tag</th>
+                                    <th>Centro Costos</th>
+                                    <th>Nombre CC</th>
+                                    <th>Work Center</th>
+                                    <th>Nombre WC</th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
@@ -93,22 +87,19 @@
 
 <script>
     $.ajax({
-        url: 'https://grammermx.com/RH/CargasGrammovilApp/dao/', // Reemplaza esto con la URL de tus datos
+        url: 'https://grammermx.com/RH/CargasGrammovilApp/dao/consultaUsuario.php', // Reemplaza esto con la URL de tus datos
         dataType: 'json',
         success: function(data) {
             var table = $('#dataTable-1').DataTable({
                 data: data.data,
                 columns: [
-                    { data: 'FolioMarbete' },
-                    { data: 'NumeroParte' },
-                    { data: 'PrimerConteo' },
-                    { data: 'SegundoConteo' },
-                    { data: 'TercerConteo' },
-                    { data: 'Comentario' },
-                    { data: 'StorageBin' },
-                    { data: 'StorageType' },
-                    { data: 'Usuario' },
-                    { data: 'Estatus' }
+                    { data: 'IdUser' },
+                    { data: 'NomUser' },
+                    { data: 'IdTag' },
+                    { data: 'IdCentroCostos' },
+                    { data: 'NombreCC' },
+                    { data: 'WC' },
+                    { data: 'NombreWC' }
                 ],
                 autoWidth: true,
                 "lengthMenu": [
