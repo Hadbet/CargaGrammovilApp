@@ -44,7 +44,7 @@
                         <i class="fe fe-message-circle fe-24 text-white"></i>
                       </span>
                       <h3 class="h4 mt-4 mb-1 text-white">Vacaciones</h3>
-                      <p class="text-white mb-4">Recuarda cargar el excel con los datos especificos.</p>
+                      <p class="text-white mb-4">Recuerda cargar el excel con los datos especificos.</p>
                       <a href="#" id="btnExcelVacaciones" class="btn btn-lg bg-secondary-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
                         <input type="file" id="fileInputVacaciones" accept=".xlsx, .xls"
                                style="display: none;"/>

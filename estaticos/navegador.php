@@ -30,7 +30,7 @@
                     <i class="fe fe-book fe-16"></i>
                     <span class="ml-3 item-text">Bases de Grammovil</span>
                 </a>
-                <ul class="collapse list-unstyled pl-4 w-100" id="contact">
+                <ul class="collapse list-unstyled pl-4 w-100 show" id="contact">
                     <a class="nav-link pl-3" href="table_caja_ahorro.php"><span class="ml-1">Caja de ahorro y prestamos</span></a>
                     <a class="nav-link pl-3" href="table_usuarios.php"><span class="ml-1">Usuarios</span></a>
                     <a class="nav-link pl-3" href="table_vacaciones.php"><span class="ml-1">Vacaciones</span></a>

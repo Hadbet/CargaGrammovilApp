@@ -52,13 +52,13 @@ function insertarRegistrosInventario($Nomina, $Nombre, $Antiguedad, $Vacaciones)
     $conex->begin_transaction();
 
     try {
-        $consultaExistente = $conex->prepare("SELECT * FROM `AuxVacaciones` WHERE `IdUser` = ? ");
+        $consultaExistente = $conex->prepare("SELECT * FROM `Vacaciones` WHERE `IdUser` = ? ");
         $consultaExistente->bind_param("s", $Nomina);
         $consultaExistente->execute();
         $consultaExistente->store_result();
 
         if ($consultaExistente->num_rows > 0) {
-            $updateInventario = $conex->prepare("UPDATE `AuxVacaciones` SET `NomUser` = ?, `FechaIngreso` = ?, `DiasVacaciones` = ? WHERE `IdUser` = ? ");
+            $updateInventario = $conex->prepare("UPDATE `Vacaciones` SET `NomUser` = ?, `FechaIngreso` = ?, `DiasVacaciones` = ? WHERE `IdUser` = ? ");
             $updateInventario->bind_param("ssss",  $Nombre, $Antiguedad, $Vacaciones, $Nomina);
             $resultado = $updateInventario->execute();
 
@@ -74,7 +74,7 @@ function insertarRegistrosInventario($Nomina, $Nombre, $Antiguedad, $Vacaciones)
 
         } else {
 
-            $insertParte = $conex->prepare("INSERT INTO  `AuxVacaciones` (`IdUser`, `NomUser`, `FechaIngreso`, `DiasVacaciones`)
+            $insertParte = $conex->prepare("INSERT INTO  `Vacaciones` (`IdUser`, `NomUser`, `FechaIngreso`, `DiasVacaciones`)
                                             VALUES (?, ?, ?, ?)");
             $insertParte->bind_param("ssss", $Nomina, $Nombre, $Antiguedad, $Vacaciones);
 
