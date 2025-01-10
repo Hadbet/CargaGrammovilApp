@@ -18,12 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $Vacaciones = isset($registroInventario['Vacaciones']) ? trim($registroInventario['Vacaciones']) : null;
 
             if ($Nomina === null || $Nombre === null || $Nombre === null || $Antiguedad === null || $Vacaciones === null) {
-                $errores[] = "Faltan datos para el registro Nomina: $Nomina, Nombre: $Nombre, Ahorro Total: $Vacaciones, Pendiente Prestamo: $Antiguedad";
+                $errores[] = "Faltan datos para el registro Nomina: $Nomina, Nombre: $Nombre, Vacaciones: $Vacaciones, Antiguedad: $Antiguedad";
                 $todosExitosos = false;
             } else {
                 $respuestaInsert = insertarRegistrosInventario($Nomina, $Nombre.' '.$PrimerApeido.' '.$SegundoApeido, $Antiguedad, $Vacaciones);
                 if ($respuestaInsert['status'] !== 'success') {
-                    $errores[] = "Error al insertar el registro ID: $Nomina. " . $respuestaInsert['message'];
+                    $errores[] = "Error al insertar el registro Nomina: $Nomina. " . $respuestaInsert['message'];
                     $todosExitosos = false;
                     break;
                 }
@@ -64,7 +64,7 @@ function insertarRegistrosInventario($Nomina, $Nombre, $Antiguedad, $Vacaciones)
 
             if (!$resultado) {
                 $conex->rollback();
-                $respuesta = array('status' => 'error', 'message' => 'Error al actualizar el registro con Nomina: ' . $Nomina . ', Nombre: '. $Nombre . ', Ahorro Total:'. $Antiguedad .', Prestamo: '.$Vacaciones);
+                $respuesta = array('status' => 'error', 'message' => 'Error al actualizar el registro con Nomina: ' . $Nomina . ', Nombre: '. $Nombre . ', Antiguedad:'. $Antiguedad .', Vacaciones: '.$Vacaciones);
             } else {
                 $conex->commit();
                 $respuesta = array('status' => 'success', 'message' => 'Registro actualizado correctamente.');
@@ -82,7 +82,7 @@ function insertarRegistrosInventario($Nomina, $Nombre, $Antiguedad, $Vacaciones)
 
             if (!$resultado) {
                 $conex->rollback();
-                $respuesta = array('status' => 'error', 'message' => 'Error en la BD al insertar el registro con Nomina: ' . $Nomina. ', Nombre: '. $Nombre . ', AhorroTotal:'. $Antiguedad .', Prestamo: '.$Vacaciones);
+                $respuesta = array('status' => 'error', 'message' => 'Error en la BD al insertar el registro con Nomina: ' . $Nomina. ', Nombre: '. $Nombre . ', Antiguedad:'. $Antiguedad .', Vacaciones: '.$Vacaciones);
             } else {
                 $conex->commit();
                 $respuesta = array('status' => 'success', 'message' => 'Registro insertado correctamente.');

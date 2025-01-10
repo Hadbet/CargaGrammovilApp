@@ -10,7 +10,6 @@ document.getElementById('fileInputInventario').addEventListener('change', (event
 });
 async function insertarExcelInventario(file) {
     try {
-        // Leer el archivo Excel
         document.getElementById("btnModal").click();
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: 'array' });
@@ -109,7 +108,7 @@ document.getElementById('fileInputVacaciones').addEventListener('change', (event
 });
 async function insertarExcelVacaciones(file) {
     try {
-        // Leer el archivo Excel
+
         document.getElementById("btnModal").click();
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: 'array' });
