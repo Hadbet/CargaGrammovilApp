@@ -73,7 +73,7 @@
                       </span>
                       <h3 class="h4 mt-4 mb-1 text-white">Usuarios</h3>
                       <p class="text-white mb-4">Recuerda cargar el excel con los datos especificos.</p>
-                      <a href="form_best_practice.html" class="btn btn-lg bg-success-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
+                      <a href="#" class="btn btn-lg bg-success-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
                     </div> <!-- .card-body -->
                   </div> <!-- .card -->
                 </div> <!-- .col-md-->
