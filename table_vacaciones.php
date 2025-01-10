@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/daterangepicker.css">
     <!-- App CSS -->
     <link rel="stylesheet" href="css/app-light.css" id="lightTheme">
+    <link rel="stylesheet" href="css/estandar.css">
 </head>
 <body class="vertical  light  ">
 <div class="wrapper">

@@ -1,0 +1,24 @@
+.copyButton {
+    color: white;
+    background-color: blue !important;
+}
+
+.csvButton {
+    color: white;
+    background-color: forestgreen !important; /* Reemplaza 'strongGreen' con el color verde fuerte que quieras */
+}
+
+.excelButton {
+    color: white;
+    background-color: green !important;
+}
+
+.pdfButton {
+    color: white;
+    background-color: red !important;
+}
+
+.printButton {
+    color: white;
+    background-color: gray !important;
+}

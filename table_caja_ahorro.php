@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/daterangepicker.css">
     <!-- App CSS -->
     <link rel="stylesheet" href="css/app-light.css" id="lightTheme">
+    <link rel="stylesheet" href="css/estandar.css">
 </head>
 <body class="vertical  light  ">
 <div class="wrapper">
@@ -29,7 +30,7 @@
     <?php require_once('estaticos/navegador.php'); ?>
     <main role="main" class="main-content">
         <div class="container-fluid">
-            <div class="row justify-content-center">
+            <div class="row">
                 <div class="col-12">
                     <h2 class="page-title">Caja de ahorro / Prestamo.</h2>
                     <div class="card shadow mb-4">
