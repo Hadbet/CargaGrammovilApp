@@ -1,5 +1,5 @@
 <?php
-include_once('db/db_Aux.php'); // Ajusta la ruta si es necesario
+include_once('db/db_Aux.php'); // Ajusta la ruta a tu conector de BD si es necesario
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $inputData = json_decode(file_get_contents("php://input"), true);
@@ -9,25 +9,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errores = [];
 
         foreach ($inputData['asistenciasData'] as $registroAsistencia) {
+            // Se valida que el registro tenga al menos una nómina para ser procesado
+            if (empty($registroAsistencia['nomina'])) {
+                continue;
+            }
+
             $respuestaInsert = insertarRegistroAsistencia($registroAsistencia);
             if ($respuestaInsert['status'] !== 'success') {
                 $errores[] = "Error en nómina " . ($registroAsistencia['nomina'] ?? 'N/A') . ": " . $respuestaInsert['message'];
                 $todosExitosos = false;
-                // Si un registro falla, detenemos el proceso para no continuar con errores.
-                break;
+                // Si se desea detener el proceso al encontrar el primer error, descomentar la siguiente línea
+                // break;
             }
         }
 
         if ($todosExitosos) {
             $respuesta = array("status" => 'success', "message" => "Todos los registros de asistencia fueron procesados correctamente.");
         } else {
-            $respuesta = array("status" => 'error', "message" => "Se encontraron errores al procesar los registros.", "detalles" => $errores);
+            $respuesta = array("status" => 'error', "message" => "Se encontraron errores al procesar algunos registros.", "detalles" => $errores);
         }
     } else {
-        $respuesta = array("status" => 'error', "message" => "Datos de asistencia no válidos o ausentes.");
+        $respuesta = array("status" => 'error', "message" => "Los datos enviados no tienen el formato correcto.");
     }
 } else {
-    $respuesta = array("status" => 'error', "message" => "Se esperaba REQUEST_METHOD POST");
+    $respuesta = array("status" => 'error', "message" => "Método no permitido. Se esperaba POST.");
 }
 
 echo json_encode($respuesta);
@@ -42,24 +47,22 @@ function insertarRegistroAsistencia($data) {
         $semana = $data['semana'];
         $anio = $data['anio'];
 
-        // 1. Antes de insertar, borramos cualquier registro existente para esa nómina, semana y año.
-        // Esto asegura que siempre se cargue la información más reciente del Excel.
-        // CORRECCIÓN: Se cambió el alias 'as' por 'asw' para evitar conflicto con la palabra reservada de SQL.
+        // 1. Borrar registros previos para la misma nómina, semana y año para evitar duplicados.
         $stmtDeleteDetalles = $conex->prepare("
             DELETE dd FROM DetallesAsistenciaDiaria dd
             JOIN AsistenciasSemanales asw ON dd.id_asistencia_semanal = asw.id
             WHERE asw.nomina = ? AND asw.semana = ? AND asw.anio = ?
         ");
         $stmtDeleteDetalles->bind_param("sii", $nomina, $semana, $anio);
-        $stmtDeleteDetalles->execute();
+        if (!$stmtDeleteDetalles->execute()) { throw new Exception("Error al limpiar detalles previos: " . $stmtDeleteDetalles->error); }
         $stmtDeleteDetalles->close();
 
         $stmtDeleteSemanal = $conex->prepare("DELETE FROM AsistenciasSemanales WHERE nomina = ? AND semana = ? AND anio = ?");
         $stmtDeleteSemanal->bind_param("sii", $nomina, $semana, $anio);
-        $stmtDeleteSemanal->execute();
+        if (!$stmtDeleteSemanal->execute()) { throw new Exception("Error al limpiar registro semanal previo: " . $stmtDeleteSemanal->error); }
         $stmtDeleteSemanal->close();
 
-        // 2. Insertamos el nuevo registro en la tabla principal `AsistenciasSemanales`
+        // 2. Insertar el registro principal en la tabla `AsistenciasSemanales`
         $stmtInsertSemanal = $conex->prepare("
             INSERT INTO AsistenciasSemanales (nomina, nombre, turno, semana, anio, total_faltas, total_te, observaciones)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -73,45 +76,46 @@ function insertarRegistroAsistencia($data) {
             $data['anio'],
             $data['total_faltas'],
             $data['total_te'],
-            $data['observaciones']
+            $data['observaciones'] // Este campo ahora se leerá correctamente
         );
 
         if (!$stmtInsertSemanal->execute()) {
             throw new Exception("Error al insertar el registro semanal: " . $stmtInsertSemanal->error);
         }
 
-        $idAsistenciaSemanal = $conex->insert_id; // Obtenemos el ID del registro que acabamos de crear
+        $idAsistenciaSemanal = $conex->insert_id;
         $stmtInsertSemanal->close();
 
-        // 3. Insertamos cada uno de los detalles diarios en la tabla `DetallesAsistenciaDiaria`
+        // 3. Insertar cada uno de los detalles diarios
         $stmtInsertDetalle = $conex->prepare("
             INSERT INTO DetallesAsistenciaDiaria (id_asistencia_semanal, dia, valor, tipo)
             VALUES (?, ?, ?, ?)
         ");
 
         foreach ($data['detalles'] as $detalle) {
-            // Se añade una validación para no insertar valores nulos que puedan venir del Excel
-            if ($detalle['valor'] !== null) {
-                $stmtInsertDetalle->bind_param(
-                    "iids",
-                    $idAsistenciaSemanal,
-                    $detalle['dia'],
-                    $detalle['valor'],
-                    $detalle['tipo']
-                );
-                if (!$stmtInsertDetalle->execute()) {
-                    throw new Exception("Error al insertar detalle del día " . $detalle['dia'] . ": " . $stmtInsertDetalle->error);
-                }
+            // Se usa una variable para el valor para poder pasarla por referencia a bind_param
+            // y asegurar que si el valor es null, se inserte NULL en la base de datos.
+            $valorAInsertar = $detalle['valor'];
+
+            $stmtInsertDetalle->bind_param(
+                "iids",
+                $idAsistenciaSemanal,
+                $detalle['dia'],
+                $valorAInsertar, // Se pasa la variable con el valor numérico
+                $detalle['tipo']      // Se pasa la variable con el tipo (letra)
+            );
+            if (!$stmtInsertDetalle->execute()) {
+                throw new Exception("Error al insertar detalle del día " . $detalle['dia'] . ": " . $stmtInsertDetalle->error);
             }
         }
         $stmtInsertDetalle->close();
 
-        // Si todo salió bien, confirmamos la transacción
+        // Si todo fue exitoso, se confirman los cambios
         $conex->commit();
-        $respuesta = array('status' => 'success', 'message' => 'Registro procesado.');
+        $respuesta = array('status' => 'success', 'message' => 'Registro procesado exitosamente.');
 
     } catch (Exception $e) {
-        // Si algo falló, revertimos todos los cambios de esta transacción
+        // Si ocurre cualquier error, se revierten todos los cambios
         $conex->rollback();
         $respuesta = array("status" => 'error', "message" => $e->getMessage());
     } finally {
