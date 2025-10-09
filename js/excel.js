@@ -263,7 +263,7 @@ async function insertarExcelAsistencias(file) {
             };
         }).filter(Boolean); // Filtramos los nulos de las filas vacías
 
-        const response = await fetch('dao/daoInsertarAsistencias.php', {
+        const response = await fetch('https://grammermx.com/RH/CargasGrammovilApp/dao/daoInsertarAsistencias.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ asistenciasData: asistenciasData })
