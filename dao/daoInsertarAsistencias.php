@@ -44,10 +44,11 @@ function insertarRegistroAsistencia($data) {
 
         // 1. Antes de insertar, borramos cualquier registro existente para esa nómina, semana y año.
         // Esto asegura que siempre se cargue la información más reciente del Excel.
+        // CORRECCIÓN: Se cambió el alias 'as' por 'asw' para evitar conflicto con la palabra reservada de SQL.
         $stmtDeleteDetalles = $conex->prepare("
             DELETE dd FROM DetallesAsistenciaDiaria dd
-            JOIN AsistenciasSemanales as ON dd.id_asistencia_semanal = as.id
-            WHERE as.nomina = ? AND as.semana = ? AND as.anio = ?
+            JOIN AsistenciasSemanales asw ON dd.id_asistencia_semanal = asw.id
+            WHERE asw.nomina = ? AND asw.semana = ? AND asw.anio = ?
         ");
         $stmtDeleteDetalles->bind_param("sii", $nomina, $semana, $anio);
         $stmtDeleteDetalles->execute();
@@ -89,15 +90,18 @@ function insertarRegistroAsistencia($data) {
         ");
 
         foreach ($data['detalles'] as $detalle) {
-            $stmtInsertDetalle->bind_param(
-                "iids",
-                $idAsistenciaSemanal,
-                $detalle['dia'],
-                $detalle['valor'],
-                $detalle['tipo']
-            );
-            if (!$stmtInsertDetalle->execute()) {
-                throw new Exception("Error al insertar detalle del día " . $detalle['dia'] . ": " . $stmtInsertDetalle->error);
+            // Se añade una validación para no insertar valores nulos que puedan venir del Excel
+            if ($detalle['valor'] !== null) {
+                $stmtInsertDetalle->bind_param(
+                    "iids",
+                    $idAsistenciaSemanal,
+                    $detalle['dia'],
+                    $detalle['valor'],
+                    $detalle['tipo']
+                );
+                if (!$stmtInsertDetalle->execute()) {
+                    throw new Exception("Error al insertar detalle del día " . $detalle['dia'] . ": " . $stmtInsertDetalle->error);
+                }
             }
         }
         $stmtInsertDetalle->close();
@@ -117,3 +121,4 @@ function insertarRegistroAsistencia($data) {
     return $respuesta;
 }
 ?>
+
