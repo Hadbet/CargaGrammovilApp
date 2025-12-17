@@ -40,8 +40,8 @@ try {
 
     // Preparar statements
     $stmtPrenomina = $conex->prepare("
-        INSERT INTO PrenominaEspecial (nomina, nombre, semana, anio, turno) 
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO PrenominaEspecial (nomina, nombre, semana, anio, turno, total_faltas, total_te, observaciones) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $stmtDetalle = $conex->prepare("
@@ -50,15 +50,18 @@ try {
     ");
 
     foreach ($prenominaData as $registro) {
-        $nomina = ltrim($registro['nomina'], '0'); // Quitar ceros a la izquierda
+        $nomina = ltrim($registro['nomina'], '0');
         $nombre = $registro['nombre'];
         $turno = $registro['turno'];
         $semana = $registro['semana'];
         $anio = $registro['anio'];
+        $total_faltas = isset($registro['total_faltas']) ? $registro['total_faltas'] : 0;
+        $total_te = isset($registro['total_te']) ? $registro['total_te'] : 0;
+        $observaciones = isset($registro['observaciones']) ? $registro['observaciones'] : '';
         $detalles = $registro['detalles'];
 
         // Insertar registro principal
-        $stmtPrenomina->bind_param("ssiss", $nomina, $nombre, $semana, $anio, $turno);
+        $stmtPrenomina->bind_param("ssissdds", $nomina, $nombre, $semana, $anio, $turno, $total_faltas, $total_te, $observaciones);
 
         if (!$stmtPrenomina->execute()) {
             $errores[] = "Error al insertar nómina $nomina: " . $stmtPrenomina->error;
