@@ -320,7 +320,7 @@ document.getElementById('fileInputPrenominaEspecial').addEventListener('change',
         insertarExcelPrenominaEspecial(file);
     }
 });
-
+// VERSIÓN CORREGIDA - Reemplaza la función insertarExcelPrenominaEspecial
 async function insertarExcelPrenominaEspecial(file) {
     try {
         document.getElementById("btnModal").click();
@@ -329,53 +329,88 @@ async function insertarExcelPrenominaEspecial(file) {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
 
-        // Leer semana de la celda B1
-        const semana = jsonData[0][1];
+        // Verificar si es prenómina especial
+        if (jsonData[0][0] !== 'WK' || jsonData[0][1] !== 'ESPECIAL') {
+            throw new Error('El archivo no parece ser una prenómina especial válida.');
+        }
+
+        // Para prenómina especial, usaremos la semana actual o un valor predeterminado
+        // Ya que el archivo dice "ESPECIAL" en lugar de un número de semana
+        const semana = 99; // Código especial para prenómina especial
         const anio = new Date().getFullYear();
 
-        // Limpiar encabezados
+        // Limpiar encabezados de la fila 2 (índice 1)
         const headers = jsonData[1].map(h => (h ? h.toString().trim() : h));
 
         const nominaIndex = headers.indexOf('NO.');
         const nombreIndex = headers.indexOf('NOMBRE');
         const turnoIndex = headers.indexOf('TURNO');
 
-        // Encontrar todos los días (números del 1 al 31)
-        const dias = headers.filter(h => h && !isNaN(parseInt(h, 10)) && parseInt(h, 10) >= 1 && parseInt(h, 10) <= 31);
+        // Encontrar columnas de días (números del 1 al 31)
+        const diasIndices = [];
+        headers.forEach((h, index) => {
+            if (h && !isNaN(parseInt(h, 10)) && parseInt(h, 10) >= 1 && parseInt(h, 10) <= 31) {
+                diasIndices.push({
+                    dia: parseInt(h, 10),
+                    colIndex: index
+                });
+            }
+        });
+
+        console.log('Días encontrados:', diasIndices);
 
         if (nominaIndex === -1 || nombreIndex === -1 || turnoIndex === -1) {
             throw new Error('El formato del Excel no es correcto. Faltan las columnas NO., NOMBRE o TURNO.');
         }
 
+        if (diasIndices.length === 0) {
+            throw new Error('No se encontraron columnas de días en el archivo.');
+        }
+
         const prenominaData = jsonData.slice(2).map((row) => {
-            if (!row[nominaIndex]) return null;
+            // Verificar que la fila tenga datos válidos
+            if (!row[nominaIndex] || row[nominaIndex] === null) return null;
 
             const detallesDiarios = [];
-            dias.forEach(dia => {
-                const diaIndex = headers.indexOf(dia);
-                if (diaIndex !== -1 && diaIndex < row.length) {
-                    // El tipo está en la columna del día
-                    const tipoRaw = row[diaIndex];
-                    // El valor está en la columna siguiente
-                    const valorRaw = row[diaIndex + 1];
 
+            // Para cada día encontrado
+            diasIndices.forEach(diaInfo => {
+                const colIndex = diaInfo.colIndex;
+                const dia = diaInfo.dia;
+
+                // El tipo está en la columna del día
+                const tipoRaw = row[colIndex];
+                // El valor TE está en la columna siguiente
+                const valorRaw = row[colIndex + 1];
+
+                // Solo agregar si hay algún dato
+                if (tipoRaw !== null || valorRaw !== null) {
                     detallesDiarios.push({
-                        dia: parseInt(dia, 10),
-                        tipo: tipoRaw || null,
-                        valor: valorRaw !== null && valorRaw !== '' ? parseFloat(valorRaw.toString().replace(',', '.')) : null
+                        dia: dia,
+                        tipo: tipoRaw ? tipoRaw.toString().trim() : null,
+                        valor: valorRaw !== null && valorRaw !== '' && !isNaN(valorRaw)
+                            ? parseFloat(valorRaw.toString().replace(',', '.'))
+                            : null
                     });
                 }
             });
 
             return {
-                nomina: row[nominaIndex],
-                nombre: row[nombreIndex] ? row[nombreIndex].trim() : '',
-                turno: row[turnoIndex],
-                semana: parseInt(semana, 10),
+                nomina: row[nominaIndex].toString().trim(),
+                nombre: row[nombreIndex] ? row[nombreIndex].toString().trim() : '',
+                turno: row[turnoIndex] ? row[turnoIndex].toString().trim() : '',
+                semana: semana, // 99 para prenómina especial
                 anio: anio,
                 detalles: detallesDiarios
             };
-        }).filter(Boolean);
+        }).filter(Boolean); // Eliminar filas nulas
+
+        console.log('Registros procesados:', prenominaData.length);
+        console.log('Primer registro:', prenominaData[0]);
+
+        if (prenominaData.length === 0) {
+            throw new Error('No se encontraron registros válidos en el archivo.');
+        }
 
         const response = await fetch('https://grammermx.com/RH/CargasGrammovilApp/dao/daoInsertarPrenominaEspecial.php', {
             method: 'POST',

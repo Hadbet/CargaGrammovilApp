@@ -25,6 +25,8 @@ $resultado = $stmt->get_result();
 
 $semanas = [];
 while ($fila = $resultado->fetch_assoc()) {
+    // Cambiar el texto de "99" a "ESPECIAL"
+    $fila['semana_texto'] = $fila['semana'] == 99 ? 'ESPECIAL' : $fila['semana'];
     $semanas[] = $fila;
 }
 
