@@ -79,6 +79,21 @@
                                 </div> <!-- .card-body -->
                             </div> <!-- .card -->
                         </div> <!-- .col-md-->
+
+                        <!-- Card para Prenómina Especial -->
+                        <div class="col-md-4">
+                            <div class="card shadow bg-warning text-center mb-4">
+                                <div class="card-body p-5">
+            <span class="circle circle-md bg-warning-light">
+                <i class="fe fe-star fe-24 text-white"></i>
+            </span>
+                                    <h3 class="h4 mt-4 mb-1 text-white">Prenómina Especial</h3>
+                                    <p class="text-white mb-4">Carga el reporte de prenómina especial semanal.</p>
+                                    <a href="#" id="btnExcelPrenominaEspecial" class="btn btn-lg bg-warning-light text-white">Subir<i class="fe fe-arrow-right fe-16 ml-2"></i></a>
+                                    <input type="file" id="fileInputPrenominaEspecial" accept=".xlsx, .xls" style="display: none;"/>
+                                </div>
+                            </div>
+                        </div>
                         <!-- FIN: Nuevo Card para Asistencias -->
                     </div> <!-- .row -->
 

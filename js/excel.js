@@ -309,3 +309,108 @@ async function insertarExcelAsistencias(file) {
     }
 }
 
+// Lógica para el botón de Prenómina Especial
+document.getElementById('btnExcelPrenominaEspecial').addEventListener('click', () => {
+    document.getElementById('fileInputPrenominaEspecial').click();
+});
+
+document.getElementById('fileInputPrenominaEspecial').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        insertarExcelPrenominaEspecial(file);
+    }
+});
+
+async function insertarExcelPrenominaEspecial(file) {
+    try {
+        document.getElementById("btnModal").click();
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
+
+        // Leer semana de la celda B1
+        const semana = jsonData[0][1];
+        const anio = new Date().getFullYear();
+
+        // Limpiar encabezados
+        const headers = jsonData[1].map(h => (h ? h.toString().trim() : h));
+
+        const nominaIndex = headers.indexOf('NO.');
+        const nombreIndex = headers.indexOf('NOMBRE');
+        const turnoIndex = headers.indexOf('TURNO');
+
+        // Encontrar todos los días (números del 1 al 31)
+        const dias = headers.filter(h => h && !isNaN(parseInt(h, 10)) && parseInt(h, 10) >= 1 && parseInt(h, 10) <= 31);
+
+        if (nominaIndex === -1 || nombreIndex === -1 || turnoIndex === -1) {
+            throw new Error('El formato del Excel no es correcto. Faltan las columnas NO., NOMBRE o TURNO.');
+        }
+
+        const prenominaData = jsonData.slice(2).map((row) => {
+            if (!row[nominaIndex]) return null;
+
+            const detallesDiarios = [];
+            dias.forEach(dia => {
+                const diaIndex = headers.indexOf(dia);
+                if (diaIndex !== -1 && diaIndex < row.length) {
+                    // El tipo está en la columna del día
+                    const tipoRaw = row[diaIndex];
+                    // El valor está en la columna siguiente
+                    const valorRaw = row[diaIndex + 1];
+
+                    detallesDiarios.push({
+                        dia: parseInt(dia, 10),
+                        tipo: tipoRaw || null,
+                        valor: valorRaw !== null && valorRaw !== '' ? parseFloat(valorRaw.toString().replace(',', '.')) : null
+                    });
+                }
+            });
+
+            return {
+                nomina: row[nominaIndex],
+                nombre: row[nombreIndex] ? row[nombreIndex].trim() : '',
+                turno: row[turnoIndex],
+                semana: parseInt(semana, 10),
+                anio: anio,
+                detalles: detallesDiarios
+            };
+        }).filter(Boolean);
+
+        const response = await fetch('https://grammermx.com/RH/CargasGrammovilApp/dao/daoInsertarPrenominaEspecial.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prenominaData: prenominaData })
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            document.getElementById("btnCloseM").click();
+            Swal.fire({
+                icon: 'success',
+                title: 'Carga exitosa',
+                text: result.message
+            });
+        } else {
+            document.getElementById("btnCloseM").click();
+            Swal.fire({
+                icon: 'error',
+                title: 'Ocurrió un problema',
+                text: result.message + (result.detalles ? `\nDetalles: ${result.detalles.join(', ')}` : '')
+            });
+        }
+
+    } catch (error) {
+        console.error("Error procesando el archivo de prenómina especial:", error);
+        document.getElementById("btnCloseM").click();
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'Ocurrió un error al procesar el archivo. Revisa la consola para más detalles.'
+        });
+    }
+}
+
