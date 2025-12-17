@@ -42,11 +42,27 @@ try {
             $detalles[] = $row;
         }
 
+        // Obtener el rango de días basado en todos los registros de esta semana especial
+        $stmtRango = $conex->prepare("
+            SELECT MIN(d.dia) as dia_min, MAX(d.dia) as dia_max 
+            FROM DetallesPrenominaEspecial d
+            INNER JOIN PrenominaEspecial p ON d.id_prenomina_especial = p.id
+            WHERE p.semana = ? AND p.anio = ?
+        ");
+        $stmtRango->bind_param("ii", $semana, $anio);
+        $stmtRango->execute();
+        $resultadoRango = $stmtRango->get_result();
+        $rango = $resultadoRango->fetch_assoc();
+
         $prenominaData['detalles'] = $detalles;
+        $prenominaData['dia_min'] = $rango['dia_min'];
+        $prenominaData['dia_max'] = $rango['dia_max'];
 
         $response['status'] = 'success';
         $response['data'] = $prenominaData;
+
         $stmtDetalles->close();
+        $stmtRango->close();
 
     } else {
         $response['status'] = 'not_found';
